@@ -65,15 +65,16 @@ class _MyFormState extends State<MyForm> {
       if (response.statusCode == 201) {
         // Se a requisição for bem-sucedida, mostre a resposta
         final responseData = json.decode(response.body);
-
+        //print(responseData);
         final message = responseData['message'];
-        final token = responseData['token'];
         final user = responseData['user'];
+        //print('User:$user');
+        final token = responseData['token'];
 
         // Exibir os dados do usuário ou fazer algo com eles
-        print('Mensagem: $message');
-        print('Token: $token');
-        print('Usuário: ${user['cn']}');
+        //print('Mensagem: $message');
+        //print('Usuário: ${user['cn']}');
+        //print('Token: $token');
 
         //Agora faz a requisição para a tela home
         final newUrl = Uri.parse('${dotenv.env['API_URL']}/home');
@@ -83,16 +84,17 @@ class _MyFormState extends State<MyForm> {
             "Content-Type": "application/json",
             "Authorization": "Bearer $token",
           },
-          body: json.encode(responseData),
+          //body: json.encode(responseData),
         );
-        print('Response Data: $responseData');
+        //print('Response Data: $responseData');
 
         if (newResponse.statusCode == 201) {
           //Navega para a nova tela passando a resposta
+
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => HomeScreen(
-                responseData: newResponse.body,
+                responseData: json.encode(responseData),
               ),
             ),
           );

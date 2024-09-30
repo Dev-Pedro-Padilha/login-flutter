@@ -3,18 +3,13 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'main.dart';
+import 'dart:typed_data';
 
 class HomeScreen extends StatelessWidget {
   final String responseData; // Armazena a resposta da API em formato JSON
 
   // Construtor da classe HomeScreen, que recebe a resposta da API
   HomeScreen({required this.responseData});
-
-  // Função que retorna a URL da imagem do usuário
-  String getUserImageUrl(user) {
-    // Substitua pela lógica correta para obter a URL da imagem do usuário
-    return '\\\\perto06\\ECQ\\SIMPEQ\\FOTOS\\${user['user']['description']}.png';
-  }
 
   // Função de logout
   void logout(BuildContext context) async {
@@ -28,6 +23,14 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Decodifica a resposta JSON para um objeto Dart
     final user = json.decode(responseData);
+    print(user);
+
+    //Verifica se existe uma imagem base64 disponivel no JSON
+    final base64Image = user['imageBase64'];
+    final Uint8List? imageBytes =
+        base64Image != null ? base64Decode(base64Image) : null;
+    print('Imagem:${base64Image}');
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Home Screen'), // Título da AppBar
@@ -88,14 +91,21 @@ class HomeScreen extends StatelessWidget {
                         .center, // Alinha os itens no centro verticalmente
                     children: [
                       ClipOval(
-                        child: Image.asset(
-                          'assets/images/user.png', // Imagem do usuário
-                          //getUserImageUrl(user), // Comentado: URL da imagem do usuário
-                          width: 50.0, // Largura da imagem
-                          height: 50.0, // Altura da imagem
-                          fit: BoxFit.cover, // Cobre o espaço do contêiner
-                        ),
-                      ),
+                          child: imageBytes != null
+                              ? Image.memory(
+                                  imageBytes,
+                                  width: 50.0, // Largura da imagem
+                                  height: 50.0, // Altura da imagem
+                                  fit: BoxFit
+                                      .cover, // Cobre o espaço do contêiner
+                                )
+                              : Image.asset(
+                                  'assets/images/user.png', // Imagem do usuário
+                                  width: 50.0, // Largura da imagem
+                                  height: 50.0, // Altura da imagem
+                                  fit: BoxFit
+                                      .cover, // Cobre o espaço do contêiner
+                                )),
                       SizedBox(
                           width: 20.0), // Espaçamento entre a imagem e o texto
                       Column(
@@ -103,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                             .start, // Alinha os textos à esquerda
                         children: [
                           Text(
-                            '${user['user']['cn']} - ${user['user']['description']}', // Nome e descrição do usuário
+                            user['user']['cn'],
                             style: TextStyle(fontSize: 13, color: Colors.white),
                           ),
                           Text(
