@@ -23,13 +23,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Decodifica a resposta JSON para um objeto Dart
     final user = json.decode(responseData);
-    print(user);
+    //print(user);
 
     //Verifica se existe uma imagem base64 disponivel no JSON
     final base64Image = user['imageBase64'];
     final Uint8List? imageBytes =
         base64Image != null ? base64Decode(base64Image) : null;
-    print('Imagem:${base64Image}');
+    //print('Imagem:${base64Image}');
 
     return Scaffold(
       appBar: AppBar(
@@ -100,7 +100,7 @@ class HomeScreen extends StatelessWidget {
                                       .cover, // Cobre o espaço do contêiner
                                 )
                               : Image.asset(
-                                  'assets/images/user.png', // Imagem do usuário
+                                  '${dotenv.env['DEFAULT_PHOTO']}', // Imagem do usuário
                                   width: 50.0, // Largura da imagem
                                   height: 50.0, // Altura da imagem
                                   fit: BoxFit
